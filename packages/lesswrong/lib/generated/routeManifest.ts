@@ -435,12 +435,16 @@ export const routeTrie = {
                         "events": {
                           "hasRoute": true
                         },
+                        "presentation": {
+                          "hasRoute": true
+                        },
                         "transcript": {
                           "hasRoute": true
                         }
                       },
                       "lowerCase": {
                         "events": "events",
+                        "presentation": "presentation",
                         "transcript": "transcript"
                       }
                     }
@@ -991,9 +995,6 @@ export const routeTrie = {
         }
       }
     },
-    "manageSubscriptions": {
-      "hasPage": true
-    },
     "meetups": {
       "hasPage": true
     },
@@ -1464,7 +1465,6 @@ export const routeTrie = {
     "login": "login",
     "logout": "logout",
     "lw": "lw",
-    "managesubscriptions": "manageSubscriptions",
     "meetups": "meetups",
     "message": "message",
     "moderation": "moderation",
