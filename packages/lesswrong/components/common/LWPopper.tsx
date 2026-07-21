@@ -156,7 +156,7 @@ const LWPopper = ({
   }</>
 };
 
-const PopperPortalContainerContext = createContext<RefObject<HTMLDivElement|null>|null>(null);
+export const PopperPortalContainerContext = createContext<RefObject<HTMLDivElement|null>|null>(null);
 export const PopperPortalProvider = ({children}: {
   children: React.ReactNode
 }) => {

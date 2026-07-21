@@ -1,6 +1,7 @@
-import { useState, useRef, useCallback, useEffect } from 'react';
+import { use, useState, useRef, useCallback, useEffect } from 'react';
 import { EventProps, useTracking } from "../../lib/analyticsEvents";
 import { isMobile } from '../../lib/utils/isMobile'
+import { PopperPortalContainerContext } from './LWPopper';
 
 function datesDifference(a: Date, b: Date): number {
   return (a as any)-(b as any);
@@ -170,6 +171,30 @@ export const useHover = (options?: {
     setAnchorEl(null)
     clearTimeout(delayTimer.current)
   }, [onLeave]);
+
+  const popperPortalContainerRef = use(PopperPortalContainerContext);
+
+  // On touch devices, hovers are entered by tapping (the browser fires a
+  // synthetic mouseOver), but the matching mouseLeave is unreliable: iOS
+  // Safari only fires synthetic mouse events for taps on elements it
+  // considers clickable, so tapping an inert part of the page fires nothing
+  // and the hover (eg a link-preview popper) gets stuck open. While hovered,
+  // watch for touches outside both the hovered element and the popper portal
+  // container (which holds the preview contents) and treat them as
+  // un-hovering.
+  useEffect(() => {
+    if (!hover) return;
+    const handleTouchEnd = (ev: TouchEvent) => {
+      const target = ev.target;
+      if (!(target instanceof Node)) return;
+      const anchorNode = anchorEl instanceof HTMLElement ? anchorEl : anchorEl?.contextElement;
+      if (anchorNode?.contains(target)) return;
+      if (popperPortalContainerRef?.current?.contains(target)) return;
+      forceUnHover();
+    };
+    document.addEventListener('touchend', handleTouchEnd);
+    return () => document.removeEventListener('touchend', handleTouchEnd);
+  }, [hover, anchorEl, popperPortalContainerRef, forceUnHover]);
 
   return {
     eventHandlers: {
